@@ -1,8 +1,4 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
+
 This file documents the reproducing guidelines for the work:
 
 > Rui Tuo, Shiyuan He, Arash Pourhabib, Yu Ding and Jianhua Z. Huang (2021+). A Reproducing Kernel Hilbert Space Approach to Functional Calibration of Computer Models.
