@@ -13,7 +13,8 @@ Reproducing the numerical results of this work requires the following R packages
 - [snowfall](https://cran.r-project.org/web/packages/snowfall/index.html)
 - [rlecuyer](https://cran.r-project.org/web/packages/rlecuyer/index.html)
 - [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
-
+- [laGP](https://CRAN.R-project.org/package=laGP)
+- [crs](https://CRAN.R-project.org/package=crs)
 
 Install the developed package for this work via
 
