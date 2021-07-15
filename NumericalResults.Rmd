@@ -1,0 +1,161 @@
+---
+title: "Numerical Results"
+output:
+  pdf_document:
+    includes:
+      in_header: "preamble.tex"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r setup2, include=FALSE}
+knitr::read_chunk("./code/result_reduce.R")
+```
+
+## Numerical Results
+
+This is the RMarkdown file to reproduce the numerical results of the work 
+
+> Rui Tuo, Shiyuan He, Arash Pourhabib, Yu Ding and Jianhua Z. Huang (2021+). A Reproducing Kernel Hilbert Space Approach to Functional Calibration of Computer Models.
+
+This RMarkdown file runs on the cached RData files in the `./data` folder. Follow the instructions of the `readme.md` file to reproduce the cached RData files.
+
+Table 1--4 correspond to the tables in the simulation section of the manuscript. 
+
+```{r, results='asis', echo = FALSE}
+str = '\\clearpage
+\\begin{table}
+	\\caption{Simulation 1 (Param-Exp model). Comparison of methods with the cheap
+		code (CC). The mean (and SE) of the $L_2$-loss and of the width and average coverage rate
+		(CR) for the level 90\\%, 95\\% and 99\\% confidence intervals.} 
+	\\begin{tabular}{|c|c|c|cc|cc|cc|}
+		\\hline
+		\\multirow{2}{*}{Code} 
+		&\\multirow{2}{*}{Method} & \\multirow{2}{*}{$L_2$-loss} & 
+		\\multicolumn{2}{c|}{90\\%}
+		& \\multicolumn{2}{c|}{95\\%}
+		& \\multicolumn{2}{c|}{99\\%} \\\\
+		& & & Width & CR & Width & CR & Width & CR\\\\
+	\\hline CC'
+
+writeLines(str)
+```
+
+```{r simu1, results='asis', echo = FALSE}
+```
+
+```{r, results='asis', echo = FALSE}
+str = '
+\\hline
+\\end{tabular}	
+\\end{table}
+'
+
+writeLines(str)
+```
+
+
+```{r, results='asis', echo = FALSE}
+str = '
+\\begin{table}
+	\\caption{Simulation 2 (Param-Quad model). Comparison of methods with the cheap
+		code (CC). The mean (and SE) of the $L_2$-loss and of the width and average coverage rate
+		(CR) for the level 90\\%, 95\\% and 99\\% confidence intervals.} 
+	\\begin{tabular}{|c|c|c|cc|cc|cc|}
+		\\hline
+		\\multirow{2}{*}{Code} 
+		&\\multirow{2}{*}{Method} & \\multirow{2}{*}{$L_2$-loss} & 
+		\\multicolumn{2}{c|}{90\\%}
+		& \\multicolumn{2}{c|}{95\\%}
+		& \\multicolumn{2}{c|}{99\\%} \\\\
+		& & & Width & CR & Width & CR & Width & CR\\\\
+	\\hline CC'
+
+writeLines(str)
+```
+
+```{r simu2, results='asis', echo = FALSE}
+```
+
+```{r, results='asis', echo = FALSE}
+str = '
+\\hline
+\\end{tabular}	
+\\end{table}
+'
+
+writeLines(str)
+```
+
+
+
+```{r, results='asis', echo = FALSE}
+str = '\\clearpage
+\\begin{table}
+	\\caption{Simulation 3. Comparison of methods with the cheap
+		code (CC). The mean (and SE) of the $L_2$-loss and of the width and average coverage rate
+		(CR) for the level 90\\%, 95\\% and 99\\% confidence intervals.} 
+	\\begin{tabular}{|c|c|c|cc|cc|cc|}
+		\\hline
+		\\multirow{2}{*}{Code} 
+		&\\multirow{2}{*}{Method} & \\multirow{2}{*}{$L_2$-loss} & 
+		\\multicolumn{2}{c|}{90\\%}
+		& \\multicolumn{2}{c|}{95\\%}
+		& \\multicolumn{2}{c|}{99\\%} \\\\
+		& & & Width & CR & Width & CR & Width & CR\\\\
+	\\hline CC'
+
+writeLines(str)
+```
+
+```{r simu3, results='asis', echo = FALSE}
+```
+
+```{r, results='asis', echo = FALSE}
+str = '
+\\hline
+\\end{tabular}	
+\\end{table}
+'
+
+writeLines(str)
+```
+
+
+
+
+```{r, results='asis', echo = FALSE}
+str = '\\begin{table}
+	\\caption{Simulation 4. Comparison of methods with the cheap
+		code (CC). The mean (and SE) of the $L_2$-loss and of the width and average coverage rate
+		(CR) for the level 90\\%, 95\\% and 99\\% confidence intervals.} 
+	\\begin{tabular}{|c|c|c|cc|cc|cc|}
+		\\hline
+		\\multirow{2}{*}{Code} 
+		&\\multirow{2}{*}{Method} & \\multirow{2}{*}{$L_2$-loss} & 
+		\\multicolumn{2}{c|}{90\\%}
+		& \\multicolumn{2}{c|}{95\\%}
+		& \\multicolumn{2}{c|}{99\\%} \\\\
+		& & & Width & CR & Width & CR & Width & CR\\\\
+	\\hline CC'
+
+writeLines(str)
+```
+
+```{r simu4, results='asis', echo = FALSE}
+```
+
+```{r, results='asis', echo = FALSE}
+str = '
+\\hline
+\\end{tabular}	
+\\end{table}
+'
+
+writeLines(str)
+```
+
+
+
