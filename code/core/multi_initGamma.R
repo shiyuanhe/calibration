@@ -1,7 +1,7 @@
 ## Get random initial values for theta
 
 
-thetaIndexList = c(1,2,3,6)
+thetaIndexList = c(1,2,3,5)
 getInit1 = function(nSample){
     gamma = matrix(rnorm(2, sd = 5), ncol = 2)
     return(gamma)

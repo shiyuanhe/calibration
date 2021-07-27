@@ -1,0 +1,125 @@
+---
+title: 'Tutorial: Multivariate Case'
+output: html_document
+---
+
+## Implementing the computer model
+
+Similar to the univariate case, the user need to implement  his/her own computer model and its derivative in C++ class in the package `calibration`. We illustrate this via the third simulation setting of this work. 
+
+In the third simulation setting of this work, the physical response is $$y^p(x) = 1 + x^3 + \sigma e$$ for $x\in [1, 2]$, where $\sigma=0.2$ and $e \sim N(0,1)$.  The computer model is $$y^s(x, \boldsymbol \theta)  = \theta_1 x + \theta_2 x^2$$ with two calibration parameters $\theta_1$ and $\theta_2$. 
+
+The computer model of this simulation setting is implemented in the file `calibration/src/simuObj_multivariate.hpp`
+The class  `simuobj_multi1` also inherits from `simuobj`. The user need to override the function `yModel`, `yModelPartial` and `yModelPartial2OCross` from the base class.
+These functions take `theta` and `dataXReal` as inputs, which are $n\times q$ and $n\times 1$ matrices, respectively. Note the dimension of the multivariate $\boldsymbol \theta$ is $q$. In math notations, the function inputs `theta` and `dataXReal` are
+$$
+\begin{pmatrix}
+\theta_1(x_1) & \theta_2(x_1) & \cdots & \theta_q(x_1) \\ 
+\theta_1(x_2) & \theta_2(x_2) & \cdots & \theta_q(x_2) \\
+\vdots & \vdots &  & \vdots\\ 
+\theta_1(x_n) & \theta_2(x_n) & \cdots & \theta_q(x_n) \\
+\end{pmatrix}\quad \text{and} \quad
+\begin{pmatrix}
+x_1 \\ x_2 \\ \vdots \\ x_n
+\end{pmatrix},
+$$
+respectively. The function `yModelPartial` returns a matrix of size $n\times q$
+containing the values of $\frac{\partial y^s(x,\boldsymbol \theta)}{\partial \theta_j}$
+in its columns for $j=1,\cdots, q$. Lastly, the function returns a vector of size $n\times 1$ containing the value of 
+$\frac{\partial^2 y^s(x,\boldsymbol \theta)}{\partial \theta_i\partial \theta_j}$
+for all observation and for a specific $(i,j)$ value.
+
+
+```cpp
+// File: calibration/src/simuObj_multivariate.hpp
+// the third simulation setup
+class simuobj_multi1:
+    public simuobj{
+public:
+    vec yModel(const mat & theta, const mat & dataXReal){
+        vec result; 
+        result = theta.col(0) % dataXReal;
+        result += theta.col(1) % dataXReal % dataXReal;
+        return result;
+    }
+    
+    // The first order partial derivatives
+    // Each row for one observation
+    // Each column for one theta
+    mat yModelPartial(const mat & theta, const mat & dataXReal){
+        mat result(dataXReal.n_rows, 2);
+        result.col(0) = dataXReal;
+        result.col(1) = dataXReal % dataXReal;
+        return result;
+    }
+
+    
+    vec yModelPartial2OCross(const mat & theta, 
+                             const mat & dataXReal,  
+                             int i, int j){
+        return arma::zeros<vec>(dataXReal.n_rows);
+    }
+    
+};
+```
+
+
+
+## One more example
+In the forth simulation setting, the physical response is $y^p(x) =x^3+  \sigma e$ for $x\in[1, 2]$, where $\sigma=0.2$ and $e \sim N(0,1)$. The computer model is $y^s(x, \boldsymbol \theta) =  \theta_1 x^{\theta_2}$ with two calibration parameters $\theta_1$ and $\theta_2$. The implementation of this computer model and its derivatives can also be found in `calibration/src/simuObj_multivariate.hpp`.
+
+```cpp
+
+// the fourth simulation setup
+class simuobj_multi2:
+    public simuobj{
+public:
+    vec yModel(const mat & theta, const mat & dataXReal){
+        vec result(dataXReal.n_rows); 
+        
+        size_t i;
+        for(i = 0; i < dataXReal.n_rows; i++){
+            result(i) = theta(i,0) * pow(dataXReal(i,0), theta(i,1));
+        }
+        return result;
+    }
+    mat yModelPartial(const mat & theta, const mat & dataXReal){
+        mat result(dataXReal.n_rows, 2);
+        size_t i;
+        for(i = 0; i < dataXReal.n_rows; i++){
+            result(i,0) = pow(dataXReal(i,0), theta(i,1));
+            result(i,1) = result(i,0) * theta(i,0) * log(dataXReal(i,0));
+        }
+        return result;
+    }
+    
+    
+    vec yModelPartial2OCross(const mat & theta, 
+                             const mat & dataXReal, 
+                             int p, int q){
+        vec result(dataXReal.n_rows, fill::zeros); 
+        size_t i;
+        if(p==0 && q ==0){
+            result = arma::zeros(dataXReal.n_rows, 1);
+        }
+        
+        if(p==1 && q ==1){
+            for(i = 0; i < dataXReal.n_rows; i++){
+                result(i) = theta(i,0) * pow(dataXReal(i,0), theta(i,1))
+                * std::log(dataXReal(i,0)) * std::log(dataXReal(i,0));
+            }
+        }
+        
+        if(p!=q){
+            for(i = 0; i < dataXReal.n_rows; i++){
+                result(i) = pow(dataXReal(i,0), theta(i,1)) *
+                    std::log(dataXReal(i,0));
+            }
+        }
+        
+        
+        return result;
+    }
+    
+};
+```

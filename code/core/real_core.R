@@ -19,7 +19,7 @@ RKHS_OOB = function(c2, lambdaSeq, getInitGamma, c3 = 2){
     for(rmI in 1:nSample){
         # cat(rmI, "\r")
         # flush.console()
-        r1Obj = create_CalibrationObj(problemIndex = 4, thetaIndex = c2, linkIndex = c3, 
+        r1Obj = create_CalibrationObj(problemIndex = 0, thetaIndex = c2, linkIndex = c3, 
                                       numComp = 1, 
                                       emuData = emuData, betaOpt = emu_betaOpt, 
                                       linkLowerB = linkLowerB, linkUpperB = linkUpperB)
@@ -46,7 +46,7 @@ RKHS_OOB_randOUT = function(c2, nRep, lambdaSeq, getInitGamma, c3 = 2, oobSize){
         # cat(rmI, "\r")
         # flush.console()
         rmSet = sample(1:nSample, oobSize,replace = FALSE)
-        r1Obj = create_CalibrationObj(problemIndex = 4, thetaIndex = c2, linkIndex = c3,
+        r1Obj = create_CalibrationObj(problemIndex = 0, thetaIndex = c2, linkIndex = c3,
                                       numComp = 1,
                                       emuData = emuData, betaOpt = emu_betaOpt,
                                       linkLowerB = linkLowerB, linkUpperB = linkUpperB)
@@ -69,7 +69,7 @@ RKHS_OOB_randOUT = function(c2, nRep, lambdaSeq, getInitGamma, c3 = 2, oobSize){
 RKHS_RD = function(c2, lambdaSeq, getInitGamma, predictX, c3 = 2){
 
     
-    r1Obj = create_CalibrationObj(problemIndex = 4, thetaIndex = c2, linkIndex = c3, 
+    r1Obj = create_CalibrationObj(problemIndex = 0, thetaIndex = c2, linkIndex = c3, 
                                   numComp = 1, 
                                   emuData = emuData, betaOpt = emu_betaOpt, 
                                   linkLowerB = linkLowerB, linkUpperB = linkUpperB)
@@ -78,7 +78,7 @@ RKHS_RD = function(c2, lambdaSeq, getInitGamma, predictX, c3 = 2){
                              nSample, 
                              getInitGamma, TrueSeqX, 
                              linkLowerB, linkUpperB,
-                             plotcv = TRUE)
+                             plotcv = FALSE)
     fitX = r1Obj$predict_y(result$gammaOpt, real_x, TRUE)
     fitNew = r1Obj$predict_y(result$gammaOpt, predictX, TRUE)
     

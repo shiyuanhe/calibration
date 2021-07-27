@@ -34,7 +34,7 @@ oneRoundCore_multi = function(iter){
     modelObjCC$setData(simuData$y, simuData$x, lowerB, upperB)
     
 
-    if(thetaIndex == 6){ ## RKHS has tuning parameter
+    if(thetaIndex == 5){ ## RKHS has tuning parameter
         res = selectLambdaGCV_multi(modelObjCC, lambdaSeq, getInit, nSample, 
                                     plotcv = FALSE, nTry = nTry_global1)
         lambdaOpt = res$lambdaOpt

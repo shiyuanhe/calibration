@@ -25,7 +25,7 @@ oneRoundCore = function(calObjCC, getInit,
 
 
 oneRound_noCV = function(iterI){
-    c2 = c(1,2,3,6) # 6 cubic
+    c2 = c(1,2,3,5) # 5 cubic
     c3 = c(2,1,1,2) # 1 identity 2 logit bound
     getInitList = list(getInitGamma_cal1, getInitGamma_cal2, 
                        getInitGamma_cal3, getInitGamma_cal6)
@@ -49,7 +49,7 @@ oneRound_noCV = function(iterI){
             lambdaSeq = lambdaSeqLinear
         if(c2[j]==5)
             lambdaSeq = lambdaSeqCubic
-        if(c2[j]==6)
+        if(c2[j]==5)
             lambdaSeq = lambdaSeqCubic#lambdaSeqExp
         
         if(c2[j] > 3){
@@ -86,7 +86,7 @@ oneRound_noCV = function(iterI){
     calObjMCMC$setData(simuData$y, simuData$x, lowerB, upperB)
     calObjMCMC$setPredition(TrueSeqX)
     mcmcResult = mcmc_execute(calObjMCMC)
-    loss1 = bayesianLoss( mcmcResult) #TrueSeqX, TrueSeqTheta,
+    loss1 = bayesianLoss(mcmcResult) #TrueSeqX, TrueSeqTheta,
      
    
     predErrMat = rbind(predErrMat, loss1[1,])

@@ -49,8 +49,8 @@ ggplot(emu_data, aes(x = emu_x, y = emu_y, color = emu_theta)) + geom_point(shap
 #####  RKHS-Cubic #####
 #leave-one-out result 
 lambdaSeqCubic = (exp(seq(-4,4,length.out = 25)))
-yHat = RKHS_OOB(c2 = 6, lambdaSeqCubic, getInitGamma_cal6)
+yHat = RKHS_OOB(c2 = 5, lambdaSeqCubic, getInitGamma_cal6)
 (rkhsRes1 = computeErr(yHat))
 # random leave-two-out result
-yHat2 = RKHS_OOB_randOUT(c2 = 6, 100, lambdaSeqCubic, getInitGamma_cal6,oobSize = 2)
+yHat2 = RKHS_OOB_randOUT(c2 = 5, 100, lambdaSeqCubic, getInitGamma_cal6,oobSize = 2)
 (rkhsRes2 = c(mean(yHat2/2), sd(yHat2/2)/sqrt(100)))

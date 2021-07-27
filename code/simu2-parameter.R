@@ -29,9 +29,7 @@ y_emulator = y_emulator_simu2
 emulator_betaOpt = c(7.203282,-3.409236)
 nugget = 1
 lambdaSeq = rev(exp(seq(-15,-6,length.out = 30)))
-lambdaSeqLinear = (exp(seq(-11,-8,length.out = 20)))
 lambdaSeqCubic = rev(exp(seq(-18,-12,length.out = 20)))
-lambdaSeqExp = (exp(seq(-14,-8,length.out = 20)))
 
 
 TrueSeqX = seq(lowerB, upperB, length.out = 200)

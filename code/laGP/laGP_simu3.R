@@ -9,7 +9,6 @@ source("./code/laGP/simu3_laGP_paramters.R")
 
 # compute MCMC evaluate loss
 problemIndex = 1
-thetaIndex = 6
 linkIndex = 1
 numComp = 2
 linkLowerB = -20

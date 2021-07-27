@@ -1,0 +1,13 @@
+Package: calibration
+Type: Package
+Title: Functional calibration of computer model
+Version: 1.0
+Date: 2017-03-20
+Author: Shiyuan He
+Maintainer: Shiyuan He <heshiyuan@ruc.edu.cn>
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+Imports: Rcpp (>= 0.12.8), methods
+LinkingTo: Rcpp, RcppArmadillo
+NeedsCompilation: yes
+Packaged: 2021-07-15 15:47:23 UTC; shiyuan

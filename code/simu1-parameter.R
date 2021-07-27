@@ -24,9 +24,7 @@ nSample = 50
 emulator_betaOpt = c(1.1126047, -0.9420013)
 nugget = 1
 lambdaSeq = rev(exp(seq(-16,-6,length.out = 13)))
-lambdaSeqLinear = (exp(seq(-12, -8,length.out = 30)))
 lambdaSeqCubic = (exp(seq(-16, -12,length.out = 30)))
-lambdaSeqExp = (exp(seq(-13, -7,length.out = 30)))
 
 ##
 y_physics = y_physics_simu1
@@ -72,9 +70,6 @@ getInitGamma_cal3 = function(nSample){
 
 getInitGamma_cal6 = function(nSample){
     gammaInit = rnorm(nSample + 2, mean = 0, sd = 10)
-    # gammaInit[1] = 1
-    # gammaInit[2] = 0
-    #gammaInit[1:2] = c(2,-1)
     return(gammaInit)
 }
 

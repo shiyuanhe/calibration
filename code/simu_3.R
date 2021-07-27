@@ -5,7 +5,7 @@ library(snowfall)
 source("./code/core/multi_loadAll.R")
 # compute MCMC evaluate loss
 problemIndex = 1
-thetaIndex = 6
+thetaIndex = 5
 linkIndex = 1
 numComp = 2
 linkLowerB = -20
