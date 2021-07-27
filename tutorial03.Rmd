@@ -1,0 +1,135 @@
+---
+title: 'Tutorial: Real Data and Expensive Code'
+output: html_document
+---
+
+The last tutorial illustrate how to apply the developed package to the real data set. It also shows how to use the emulator in the case of expensive code. For this purpose, we need to
+
+- fit Gaussian process to the simulated data;
+- use the fitted Gaussian process as emulator and as a surrogate for the computer model;
+- fit the RKHS calibration model.
+
+```{r, warning=FALSE}
+library(calibration)
+source("./code/core/loadAll.R")
+```
+
+Let's load the data set and plot the actual observations.
+
+```{r}
+mData = R.matlab::readMat("./data/data_new_Phy_Sim.mat")
+real_x = mData$xa
+real_yp_original = mData$PA
+plot(real_x, real_yp_original, pch = 20, xlab = "PVA Amount", ylab = "modulus")
+```
+
+```{r}
+lowerB = 0.4
+upperB = 1.2
+nSample = length(real_x)
+real_x = matrix(real_x, nSample)
+predX = matrix(seq(lowerB, upperB, length.out = 100), nrow =100)
+linkLowerB = 0.35
+linkUpperB = 1.05
+```
+
+
+
+```{r}
+emu_x = mData$PVA.a[,1]
+emu_theta = mData$PVA.a[,2]
+emu_y = mData$A.502[,2]
+emuData = list(x = cbind(emu_x, emu_theta), y = emu_y)
+```
+
+### Fitting Gaussian Process for the enumlator
+
+
+The Gaussian process uses the squared exponential kernel
+$$
+k(x_1, x_2) = \theta_1 \exp\left(- \Vert x_1 - x_2 \Vert_2^2/\theta_2\right).
+$$
+The kernel parameters are ensured to be positive by taking the transformation
+$$
+\theta_i = \exp(\beta_i),\ i = 1,2.
+$$
+
+
+
+```{r}
+GP = new(gaussianP)
+GP$set_data(emuData$y, emuData$x)
+betaInit = rnorm(2, c(2,-2), 2)
+optRes = optim(betaInit, fn = GP$cv_obj,
+               gr = GP$cv_grad, method = "Nelder-Mead",
+               control = list(alpha = 0.01, trace = 1))
+optRes$value/1e5
+optRes$par
+```
+
+The last line prints the fitted value of $\beta_1$ and $\beta_2$. We need to repeat the above fitting multiple times with random initial values and take the value of $\beta_1$ and $\beta_2$ with minimal objective value `optRes$value`. In fact, `optRes$value` is the leave-one-out cross-validation error.
+In the following, we will take the following specific values of $\beta_1$ and $\beta_2$.
+
+```{r}
+emu_betaOpt = c(3.932682, -2.6915)
+```
+
+### Debias
+
+Subtract the bias between two datasets (the actual observation and the emulator training dataset).
+```{r}
+### Debias and plot
+sel = real_x > 0.5 & real_x < 1.0
+bias = mean(emu_y) - mean(real_yp_original[sel]) 
+real_yp = real_yp_original + bias
+library(ggplot2)
+emu_data = data.frame(emu_x = emu_x, emu_y = emu_y, emu_theta = emu_theta)
+real_data = data.frame(real_x = real_x, real_yp = real_yp, emu_theta = 1)
+real_data2 = data.frame(real_x = real_x, real_yp = real_yp_original, emu_theta = 1)
+ggplot(emu_data, aes(x = emu_x, y = emu_y, color = emu_theta)) + geom_point(shape = 17) +
+    geom_point(aes(real_x, real_yp, fill = "debiased"), pch = 21,data = real_data,size = 2) +
+    geom_point(aes(real_x, real_yp, fill = "original"), pch = 21,data = real_data2,size = 2) +
+    scale_color_gradient(low="steelblue",high="white")+
+    theme_bw() + xlab("PVA Amount") + ylab("modulus")+
+    scale_fill_manual(values=c("red", "blue","blue"))
+```
+
+### Fitting the model
+
+**Note:** Setting `problemIndex=0` means using Gaussian process as a surrogate for the computer model in the expensive code case.
+```{r}
+lambdaSeqCubic = exp(seq(-4,4,length.out = 25))
+r1Obj = create_CalibrationObj(problemIndex = 0, 
+                              thetaIndex = 5, 
+                              linkIndex = 2, 
+                              numComp = 1, 
+                              emuData = emuData, 
+                              betaOpt = emu_betaOpt, 
+                              linkLowerB = linkLowerB, linkUpperB = linkUpperB)
+real_x = matrix(real_x, nrow = nSample)
+r1Obj$setData(real_yp, real_x,  lowerB, upperB)
+getInitGamma = function(nSample){
+    gammaInit = rnorm(nSample + 2, mean = 0, sd = 10)
+    return(gammaInit)
+}
+result = selectLambdaGCV(r1Obj, lambdaSeqCubic, 
+                         nSample, 
+                         getInitGamma, predX, 
+                         linkLowerB, linkUpperB)
+yFitted = r1Obj$predict_y(result$gammaOpt, predX, TRUE)
+```
+
+
+The next plot  is the fitted response.
+```{r}
+plot(predX, yFitted[,1], type = "l", xlab = "PVA Amount", ylab = "modulus")
+points(real_x, real_yp,pch = 20)
+```
+
+The next plot  is the fitted calibration function.
+```{r}
+plot(predX, yFitted[,3], type = "l",ylim = c(0.6,1.4),
+     xlab = "PVA Amount", ylab = "Effecitiveness")
+lines(predX, yFitted[,3] + yFitted[,4], lty = 2)
+lines(predX, yFitted[,3] - yFitted[,4], lty = 2)
+```

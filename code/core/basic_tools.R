@@ -59,57 +59,6 @@ optimize_CalModel = function(getInit, calObj,
     return(optGamma)
 }
 
-## Prediction error on testingData after training
-compute_predErr = function(calObj,  getInitGamma, lambda,
-                           lowerB, upperB,
-                           trainingData, testingData,
-                           TrueSeqX, linkLowerB, linkUpperB){
-    calObj$setData(trainingData$y, trainingData$x,  lowerB, upperB)
-    calObj$setLambda(lambda)
-    nTSample= dim(trainingData)[1]
-    if(!is.numeric(getInitGamma))
-        gammaOpt = optimize_CalModel(getInitGamma, calObj, nTSample, 
-                                     TrueSeqX, linkLowerB, linkUpperB,
-                                     nTry = 100)
-    else
-        gammaOpt = optimize_CalModelOnce(getInitGamma, calObj)
-    yHat = calObj$predict_y(gammaOpt, testingData$x, FALSE)
-    predErr = sum((yHat[,1] - testingData$y)^2)
-    
-    return(list(err= predErr, gammaOpt = gammaOpt))
-}
-
-## Select tuning parameter lambda
-## from 10-fold cross validation
-selectLambda = function(calObjCC, lambdaSeq, simuData,
-                        lowerB, upperB, getInitGamma, 
-                        TrueSeqX, linkLowerB, linkUpperB,
-                        plotcv = FALSE){
-    cvErr = rep(0, length(lambdaSeq))
-    
-    for(cvI in 1:10){
-        selCase = ((cvI-1)*5 + 1):(cvI*5)
-        trainingData = simuData[-selCase,]
-        testingData = simuData[selCase,]
-        getInit = getInitGamma
-        
-        for(lambdaJ in 1:length(lambdaSeq)){
-            res = compute_predErr(calObjCC,  getInit, lambdaSeq[lambdaJ],
-                                  lowerB, upperB,
-                                  trainingData, testingData, 
-                                  TrueSeqX, linkLowerB, linkUpperB)
-            getInit = res$gammaOpt ## replace fun by optimal gamma
-            cvErr[lambdaJ] = cvErr[lambdaJ] + res$err
-        }
-    }
-    
-    # if plotcv
-    if(plotcv){
-        plot(log(lambdaSeq), cvErr)
-    }
-    minJ = which.min(cvErr)
-    return(lambdaSeq[minJ])
-}
 
 
 ## Select tuning parameter lambda

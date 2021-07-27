@@ -41,7 +41,7 @@ Rscript ./code/laGP/laGP_simu4.R
 
 Run the RMarkdown file `NumericalResults.Rmd` to produce the final numerical results. You will get a pdf file `NumericalResults.pdf`.
 
-The script to apply the proposed method over the real data can be found at `./code/real_data.R`.
+The script to apply the proposed method over the real data can be found at `tutorial03.html`. See the next section.
 
 
 ## How to use the package

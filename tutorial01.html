@@ -216,7 +216,8 @@ public:
 x_1 \\ x_2 \\ \vdots \\ x_n
 \end{pmatrix},
 \]</span> respectively.</p>
-<p>See the <code>problemIndex</code> in the next section.</p>
+<p>The above computer model will be used by the class <code>calModel</code> (in file <code>calibration/src/methodRKHS.cpp</code> and <code>calibration/src/methodRKHS.cpp</code>) to fit the RKHS calibration model. The class <code>calModel</code> inherit from the base class <code>methodBase</code> (in file <code>calibration/src/methodBase.cpp</code>).</p>
+<p>The user can implement his/her own computer model, e.g., a class named <code>myModel</code>. Modify the <code>methodBase::selectSimulator</code> function in the file <code>calibration/src/methodBase.cpp</code>. Then set <code>problemIndex=3</code> in the R code to use the calibration model. See the <code>problemIndex</code> in the next section for more information.</p>
 <pre class="cpp"><code>// File: calibration/src/methodBase.cpp
 void methodBase::selectSimulator(int c1){
     switch(c1){

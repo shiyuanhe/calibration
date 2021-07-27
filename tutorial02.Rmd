@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial: Multivariate Case'
+title: 'Tutorial: Cheap code and the Multivariate Case'
 output: html_document
 ---
 
@@ -63,7 +63,73 @@ public:
 };
 ```
 
+The computer model for multivariate calibration problem will be used by the class `calModelMulti` in the file `calibration/src/method_RKHS_multivariate.hpp` and `calibration/src/method_RKHS_multivariate.hpp`.
 
+## Use the computer model
+
+
+```{r}
+library(calibration)
+library(snowfall)
+source("./code/core/multi_loadAll.R")
+linkLowerB = -20
+linkUpperB = 20
+nSample = 50
+lowerB = 1
+upperB = 2
+TrueSeqX = seq(lowerB, upperB, length.out = 200)
+TrueSeqX = matrix(TrueSeqX, ncol = 1)
+TrueSeqY = 1 + TrueSeqX^3
+TrueSeqTheta = cbind(1/TrueSeqX, TrueSeqX)
+lenLambda = 50
+lambdaSeq = rev(exp(seq(-7,3, length.out = lenLambda)))
+```
+
+
+Generate a group of samples of size $n=50$.
+```{r}
+y_physics = function(nSample, lowerB, upperB){
+    xData = matrix(runif(nSample, lowerB, upperB), ncol = 1)
+    yPhysical = 1 + xData^3 + rnorm(nSample, sd = 0.2)
+    return(list(x = xData, y = yPhysical))
+}
+simuData = y_physics(nSample,lowerB, upperB)
+```
+
+Create a C++ object. The user need to specify the dimension of $\boldsymbol \theta$. In this example, 
+we set `numComp = 2`, which means $\boldsymbol \theta$ is 2-dimensional.
+```{r}
+modelObjCC = create_CalibrationObj(problemIndex = 1, 
+                                   thetaIndex = 5, linkIndex = 2, 
+                                   numComp = 2, 
+                                   linkLowerB = linkLowerB, 
+                                   linkUpperB = linkUpperB)
+modelObjCC$setData(simuData$y, simuData$x, lowerB, upperB)
+```    
+
+
+The function `getInit` providing random initial values returns a matrix with two columns. Each column has the initial value for one $\theta_j$.
+```{r}
+getInit = function(nSample){
+    gamma = matrix(rnorm(2 * (nSample + 2), sd = 5), ncol = 2)
+    return(gamma)
+}
+res = selectLambdaGCV_multi(modelObjCC, lambdaSeq, getInit, nSample)
+lambdaOpt = res$lambdaOpt
+modelObjCC$setLambda(lambdaOpt)
+res = optimize_CalModel_multi(getInit, nSample, modelObjCC, nTry = 50)
+optGamma = res$par
+```
+
+The matrix `ySeqHat` has three columns. It contains the fitted value of $y$, $\theta_1$ and $\theta_2$ in its columns. The fitted values are computed at $x$ values inside `TrueSeqX`. The one sigma uncertainty of these fitted values are contained in `ySigma`, which is also a matrix with three columns. Let's plot the observation in black points and the fitted response in red curve.
+```{r}
+ySeqHat = modelObjCC$predict_y(optGamma, TrueSeqX, FALSE)
+ySigma = modelObjCC$sigmaSq_y(optGamma, TrueSeqX,  lambdaOpt)
+plot(simuData$x, simuData$y, pch = 20)
+lines(TrueSeqX, ySeqHat[,1], col = "red")
+lines(TrueSeqX, ySeqHat[,1]+1.96*ySigma[,1], col = "red", lty = 2)
+lines(TrueSeqX, ySeqHat[,1]-1.96*ySigma[,1], col = "red", lty = 2)
+```
 
 ## One more example
 In the forth simulation setting, the physical response is $y^p(x) =x^3+  \sigma e$ for $x\in[1, 2]$, where $\sigma=0.2$ and $e \sim N(0,1)$. The computer model is $y^s(x, \boldsymbol \theta) =  \theta_1 x^{\theta_2}$ with two calibration parameters $\theta_1$ and $\theta_2$. The implementation of this computer model and its derivatives can also be found in `calibration/src/simuObj_multivariate.hpp`.

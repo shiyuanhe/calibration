@@ -17,10 +17,7 @@ getInitGamma_cal3 = function(nSample){
     return(gammaInit)
 }
 
-getInitGamma_cal4 = function(nSample){
-    gammaInit = rnorm(nSample + 1, mean = 0, sd = 10)
-    return(gammaInit)
-}
+
 
 getInitGamma_cal6 = function(nSample){
     gammaInit = rnorm(nSample + 2, mean = 0, sd = 10)
@@ -28,8 +25,3 @@ getInitGamma_cal6 = function(nSample){
     return(gammaInit)
 }
 
-getInitGamma_cal8 = function(nSample){
-    gammaInit = rnorm(nSample, mean = 0, sd = 10)
-    gammaInit[1:2] = -1
-    return(gammaInit)
-}

@@ -79,7 +79,15 @@ $$
 respectively.
 
 
-See the `problemIndex` in the next section.
+The above computer model will be used
+by the class `calModel` (in file `calibration/src/methodRKHS.cpp` and 
+`calibration/src/methodRKHS.cpp`) to fit the RKHS calibration model.
+The class `calModel` inherit from the base class `methodBase` (in file `calibration/src/methodBase.cpp`).
+
+The user can implement  his/her own computer model, e.g., a class named `myModel`. Modify the 
+`methodBase::selectSimulator` function in the file `calibration/src/methodBase.cpp`.
+Then set `problemIndex=3` in the R code to use the calibration model. See the `problemIndex` in the next section for more information.
+
 ```cpp
 // File: calibration/src/methodBase.cpp
 void methodBase::selectSimulator(int c1){
