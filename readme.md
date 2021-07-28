@@ -26,9 +26,7 @@ R CMD INSTALL calibration
 ## Steps to reproduce parts of the numerical results
 
 
-The RMarkdown file is generated on cached data files. The cached data files can be reproduced by the following steps.
-
-Execute the following command in the terminal. The code will run the cheap code of each simulation setting. The generated RData files can be found in the `data` folder.
+The RMarkdown file is generated on cached data files (`*.RData`) in the data folder. The cached data files can be reproduced by the following steps. Execute the following command in the terminal. The code will run the cheap code of each simulation setting. 
 
 ```bash
 Rscript ./code/simu_1.R
